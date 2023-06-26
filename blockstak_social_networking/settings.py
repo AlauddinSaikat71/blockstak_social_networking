@@ -9,6 +9,11 @@ https://docs.djangoproject.com/en/4.2/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.2/ref/settings/
 """
+import os
+import dotenv
+
+# Load environment variables from .env file
+dotenv.load_dotenv()
 
 from pathlib import Path
 
@@ -23,9 +28,11 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-scs=)&h_luf7sh27j3-pi3_20zdzgvaoh)@03ke@i$^i2^w9td'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['localhost']
+
+AUTH_USER_MODEL = 'api.User'
 
 
 # Application definition
@@ -37,9 +44,15 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'rest_framework',
+    'corsheaders',
+    'api.apps.ApiConfig',
 ]
 
+CORS_ORIGIN_ALLOW_ALL = True
+
 MIDDLEWARE = [
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -75,11 +88,14 @@ WSGI_APPLICATION = 'blockstak_social_networking.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'djongo',
+        'NAME': os.getenv('MONGODB_NAME'),
+        'HOST': os.getenv('MONGODB_HOST'),
+        'PORT': int(os.getenv('MONGODB_PORT')),
+        'USER': os.getenv('MONGODB_USERNAME'),
+        'PASSWORD': os.getenv('MONGODB_PASSWORD'),
     }
 }
-
 
 # Password validation
 # https://docs.djangoproject.com/en/4.2/ref/settings/#auth-password-validators
